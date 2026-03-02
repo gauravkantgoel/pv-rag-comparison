@@ -37,7 +37,7 @@ on a Pharmacovigilance PBRER document.
 │  └───────┬───────┘  └───────┬───────────┘            │
 │          │                   │                        │
 │  ┌───────▼───────┐  ┌───────▼───────────┐            │
-│  │ JSON + NumPy   │  │ OpenAI GPT-4o     │            │
+│  │ JSON + NumPy   │  │ LLM    │            │
 │  │ (local vector  │  │ (reasoning calls)  │           │
 │  │  store file)   │  │                    │           │
 │  └───────────────┘  └───────────────────┘            │

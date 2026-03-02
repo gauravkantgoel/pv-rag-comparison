@@ -53,7 +53,7 @@ on a Pharmacovigilance PBRER document.
 
 - Python 3.10+
 - Node.js 18+ (only for optional PDF generation)
-- OpenAI API key (for LLM calls)
+- Anthropic API key (for LLM calls)
 
 ## Setup (Step by Step)
 

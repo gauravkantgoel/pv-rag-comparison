@@ -1,1 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Comparison — Vector RAG vs PageIndex</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e14;
+  --surface: #111820;
+  --surface2: #1a2230;
+  --border: #243040;
+  --text: #d4dae4;
+  --text-dim: #7a8898;
+  --accent-vector: #ef6b4a;
+  --accent-vector-dim: rgba(239,107,74,0.12);
+  --accent-pi: #3ddc84;
+  --accent-pi-dim: rgba(61,220,132,0.12);
+  --accent-blue: #4da6ff;
+  --white: #f0f4f8;
+  --red: #ff5c5c;
+  --yellow: #ffd666;
+  --font: 'IBM Plex Sans', -apple-system, sans-serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
 
+/* ── Header ── */
+.header {
+  background: linear-gradient(135deg, #0d1420 0%, #14202e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header h1 { font-size: 18px; font-weight: 600; color: var(--white); letter-spacing: -0.3px; }
+.header h1 span.v { color: var(--accent-vector); }
+.header h1 span.p { color: var(--accent-pi); }
+.header .subtitle { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+/* ── Document Bar ── */
+.doc-bar {
+  padding: 12px 32px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.doc-info {
+  display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;
+}
+.doc-icon { font-size: 18px; }
+.doc-name { font-size: 13px; font-weight: 600; color: var(--white); }
+.doc-meta { font-size: 11px; color: var(--text-dim); font-family: var(--mono); }
+.doc-actions { display: flex; gap: 8px; }
+.btn-sm {
+  padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.btn-upload { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+.btn-upload:hover { filter: brightness(1.1); }
+.btn-demo { background: transparent; color: var(--text); }
+.btn-demo:hover { border-color: var(--accent-blue); color: var(--white); }
+.btn-sm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Hidden file input */
+#fileInput { display: none; }
+
+/* Upload progress overlay */
+.upload-overlay {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,14,20,0.85); z-index: 100;
+  justify-content: center; align-items: center;
+}
+.upload-overlay.active { display: flex; }
+.upload-modal {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 32px 40px; text-align: center; max-width: 420px;
+}
+.upload-modal .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.upload-modal h3 { font-size: 16px; color: var(--white); margin-bottom: 8px; }
+.upload-modal p { font-size: 13px; color: var(--text-dim); }
+.upload-step { font-family: var(--mono); font-size: 12px; color: var(--accent-blue); margin-top: 12px; }
+
+/* ── Query Section ── */
+.query-section {
+  padding: 20px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.query-bar { display: flex; gap: 10px; max-width: 900px; }
+.query-bar input {
+  flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 16px; color: var(--white); font-size: 14px; font-family: var(--font); outline: none; transition: border-color 0.2s;
+}
+.query-bar input:focus { border-color: var(--accent-blue); }
+.query-bar input::placeholder { color: var(--text-dim); }
+.query-bar button {
+  background: var(--accent-blue); color: #fff; border: none; border-radius: 8px;
+  padding: 12px 24px; font-size: 14px; font-weight: 600; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.query-bar button:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.query-bar button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.test-queries { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.test-queries .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-dim); font-weight: 500; margin-right: 4px; }
+.test-chip {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: 5px 10px; font-size: 12px; color: var(--text); cursor: pointer;
+  transition: all 0.15s; font-family: var(--font);
+}
+.test-chip:hover { border-color: var(--accent-blue); background: rgba(77,166,255,0.08); }
+.test-chip .diff { font-size: 10px; padding: 1px 5px; border-radius: 3px; margin-left: 5px; font-weight: 600; }
+.diff-easy { background: rgba(61,220,132,0.2); color: var(--accent-pi); }
+.diff-hard { background: rgba(239,107,74,0.2); color: var(--accent-vector); }
+
+/* ── Main Content ── */
+.main { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: calc(100vh - 220px); }
+.panel { padding: 24px; border-right: 1px solid var(--border); overflow-y: auto; }
+.panel:last-child { border-right: none; }
+.panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+.panel-header h2 { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.panel-header .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.panel-header .tag { font-size: 10px; font-family: var(--mono); padding: 3px 8px; border-radius: 4px; font-weight: 500; }
+.panel-vector .panel-header { border-bottom-color: var(--accent-vector); }
+.panel-vector .dot { background: var(--accent-vector); }
+.panel-vector .tag { background: var(--accent-vector-dim); color: var(--accent-vector); }
+.panel-pi .panel-header { border-bottom-color: var(--accent-pi); }
+.panel-pi .dot { background: var(--accent-pi); }
+.panel-pi .tag { background: var(--accent-pi-dim); color: var(--accent-pi); }
+
+/* ── Stats ── */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+.stat-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; text-align: center; }
+.stat-card .val { font-size: 20px; font-weight: 700; font-family: var(--mono); color: var(--white); }
+.stat-card .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin-top: 2px; }
+
+.section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 600; margin: 20px 0 10px; }
+
+.step-card, .chunk-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: border-color 0.2s; }
+.step-card:hover, .chunk-card:hover { border-color: #3a4a5a; }
+.step-num { font-size: 11px; font-family: var(--mono); font-weight: 600; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+.step-fetch { background: rgba(77,166,255,0.15); color: var(--accent-blue); }
+.step-answer { background: rgba(61,220,132,0.15); color: var(--accent-pi); }
+.step-error { background: rgba(255,92,92,0.15); color: var(--red); }
+.step-reasoning { font-size: 13px; color: var(--text); line-height: 1.5; margin-top: 6px; }
+.step-meta { font-size: 11px; color: var(--text-dim); font-family: var(--mono); margin-top: 8px; }
+.chunk-sim { font-family: var(--mono); font-size: 12px; font-weight: 600; float: right; }
+.chunk-sim-high { color: var(--accent-pi); }
+.chunk-sim-mid { color: var(--yellow); }
+.chunk-sim-low { color: var(--red); }
+.chunk-preview { font-size: 12px; font-family: var(--mono); color: var(--text-dim); background: var(--bg); padding: 8px 10px; border-radius: 4px; margin-top: 8px; max-height: 100px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+
+.answer-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-top: 16px; }
+.answer-box .answer-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 8px; }
+.panel-vector .answer-label { color: var(--accent-vector); }
+.panel-pi .answer-label { color: var(--accent-pi); }
+.answer-text { font-size: 13px; line-height: 1.7; color: var(--text); }
+
+.pages-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.page-badge { font-size: 10px; font-family: var(--mono); padding: 2px 7px; border-radius: 3px; font-weight: 600; }
+.panel-vector .page-badge { background: var(--accent-vector-dim); color: var(--accent-vector); }
+.panel-pi .page-badge { background: var(--accent-pi-dim); color: var(--accent-pi); }
+.page-ideal { background: rgba(77,166,255,0.15) !important; color: var(--accent-blue) !important; border: 1px solid rgba(77,166,255,0.3); }
+
+.coverage-bar-container { margin-top: 12px; }
+.coverage-label { font-size: 11px; font-family: var(--mono); color: var(--text-dim); margin-bottom: 4px; }
+.coverage-bar { height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.coverage-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.panel-vector .coverage-fill { background: var(--accent-vector); }
+.panel-pi .coverage-fill { background: var(--accent-pi); }
+.coverage-na { font-size: 11px; color: var(--text-dim); font-style: italic; margin-top: 12px; }
+
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; color: var(--text-dim); text-align: center; }
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state p { font-size: 13px; max-width: 260px; }
+.loading-spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+
+@media (max-width: 900px) {
+  .main { grid-template-columns: 1fr; }
+  .panel { border-right: none; border-bottom: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div>
+    <h1><span class="v">Vector RAG</span> vs <span class="p">PageIndex</span></h1>
+    <div class="subtitle">Side-by-side comparison on any document</div>
+  </div>
+</div>
+
+<!-- ═══ DOCUMENT BAR ═══ -->
+<div class="doc-bar">
+  <div class="doc-info">
+    <span class="doc-icon" id="docIcon">📄</span>
+    <div>
+      <div class="doc-name" id="docName">Loading...</div>
+      <div class="doc-meta" id="docMeta"></div>
+    </div>
+  </div>
+  <div class="doc-actions">
+    <input type="file" id="fileInput" accept=".pdf" />
+    <button class="btn-sm btn-upload" onclick="document.getElementById('fileInput').click()">Upload PDF</button>
+    <button class="btn-sm btn-demo" id="demoBtn" onclick="loadDemo()">Load Demo PBRER</button>
+  </div>
+</div>
+
+<!-- ═══ UPLOAD OVERLAY ═══ -->
+<div class="upload-overlay" id="uploadOverlay">
+  <div class="upload-modal">
+    <div class="spinner"></div>
+    <h3 id="uploadTitle">Processing document...</h3>
+    <p id="uploadDesc">This may take 30-60 seconds for the tree index generation.</p>
+    <div class="upload-step" id="uploadStep">Extracting text from PDF...</div>
+  </div>
+</div>
+
+<!-- ═══ QUERY BAR ═══ -->
+<div class="query-section">
+  <div class="query-bar">
+    <input type="text" id="queryInput" placeholder="Ask a question about the loaded document..." />
+    <button id="runBtn" onclick="runQuery()">Compare Both</button>
+  </div>
+  <div class="test-queries" id="testQueries">
+    <span class="label">Test queries:</span>
+  </div>
+</div>
+
+<!-- ═══ RESULTS ═══ -->
+<div class="main">
+  <div class="panel panel-vector" id="panelVector">
+    <div class="panel-header">
+      <h2><span class="dot"></span> Vector RAG</h2>
+      <span class="tag">Chunk + Embed + Similarity</span>
+    </div>
+    <div class="empty-state" id="vectorEmpty">
+      <div class="icon">🔢</div>
+      <p>Enter a query to see Vector RAG results</p>
+    </div>
+    <div id="vectorResults" style="display:none;"></div>
+  </div>
+
+  <div class="panel panel-pi" id="panelPageIndex">
+    <div class="panel-header">
+      <h2><span class="dot"></span> PageIndex</h2>
+      <span class="tag">Tree Index + LLM Reasoning</span>
+    </div>
+    <div class="empty-state" id="piEmpty">
+      <div class="icon">🌲</div>
+      <p>Enter a query to see PageIndex results</p>
+    </div>
+    <div id="piResults" style="display:none;"></div>
+  </div>
+</div>
+
+<script>
+const API = "http://localhost:8000";
+let testQueriesList = [];
+let currentIdealPages = [];
+let isDefaultDocument = false;
+
+// ── Document status ──
+async function loadDocumentStatus() {
+  try {
+    const res = await fetch(`${API}/api/document-status`);
+    const data = await res.json();
+    updateDocBar(data);
+  } catch (e) {
+    document.getElementById("docName").textContent = "Backend not running";
+    document.getElementById("docMeta").textContent = "Start: uvicorn backend.app:app --port 8000";
+  }
+}
+
+function updateDocBar(data) {
+  document.getElementById("docName").textContent = data.document_name || "No document loaded";
+  document.getElementById("docMeta").textContent = data.total_pages
+    ? `${data.total_pages} pages · ${data.num_chunks} chunks · tree: ${data.has_tree ? "ready" : "none"}`
+    : "";
+  document.getElementById("docIcon").textContent = data.total_pages ? "📄" : "📭";
+  isDefaultDocument = data.is_default;
+  loadTestQueries();
+}
+
+// ── File upload ──
+document.getElementById("fileInput").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const overlay = document.getElementById("uploadOverlay");
+  overlay.classList.add("active");
+  document.getElementById("uploadTitle").textContent = `Processing: ${file.name}`;
+  document.getElementById("uploadStep").textContent = "Uploading and extracting text...";
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    setTimeout(() => {
+      document.getElementById("uploadStep").textContent = "Chunking and embedding for Vector RAG...";
+    }, 3000);
+    setTimeout(() => {
+      document.getElementById("uploadStep").textContent = "Generating tree index with Claude (this takes ~30s)...";
+    }, 8000);
+
+    const res = await fetch(`${API}/api/upload`, { method: "POST", body: formData });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || "Upload failed");
+    }
+
+    const result = await res.json();
+    overlay.classList.remove("active");
+    updateDocBar({ ...result, has_tree: true, is_default: false });
+
+    // Clear previous results
+    document.getElementById("vectorResults").style.display = "none";
+    document.getElementById("vectorEmpty").style.display = "flex";
+    document.getElementById("piResults").style.display = "none";
+    document.getElementById("piEmpty").style.display = "flex";
+
+  } catch (err) {
+    overlay.classList.remove("active");
+    alert("Upload failed: " + err.message);
+  }
+  e.target.value = "";
+});
+
+// ── Load demo ──
+async function loadDemo() {
+  const btn = document.getElementById("demoBtn");
+  btn.disabled = true;
+  btn.textContent = "Loading...";
+  try {
+    const res = await fetch(`${API}/api/load-demo`, { method: "POST" });
+    const data = await res.json();
+    updateDocBar({ ...data, has_tree: true, is_default: true });
+  } catch (e) {
+    alert("Failed to load demo: " + e.message);
+  }
+  btn.disabled = false;
+  btn.textContent = "Load Demo PBRER";
+}
+
+// ── Test queries ──
+async function loadTestQueries() {
+  const container = document.getElementById("testQueries");
+  // Clear existing chips (keep label)
+  container.querySelectorAll(".test-chip").forEach(c => c.remove());
+
+  if (!isDefaultDocument) {
+    // Hide test queries for non-demo documents
+    container.style.display = "none";
+    testQueriesList = [];
+    return;
+  }
+  container.style.display = "flex";
+
+  try {
+    const res = await fetch(`${API}/api/test-queries`);
+    const data = await res.json();
+    testQueriesList = data.queries || data;
+
+    testQueriesList.forEach(q => {
+      const chip = document.createElement("button");
+      chip.className = "test-chip";
+      chip.innerHTML = `Q${q.id}: ${q.challenge} <span class="diff ${q.difficulty === 'Easy' ? 'diff-easy' : 'diff-hard'}">${q.difficulty}</span>`;
+      chip.onclick = () => {
+        document.getElementById("queryInput").value = q.query;
+        currentIdealPages = q.ideal_pages;
+        runQuery();
+      };
+      container.appendChild(chip);
+    });
+  } catch (e) {
+    console.log("Could not load test queries");
+  }
+}
+
+// ── Match typed query against test queries for coverage ──
+function findIdealPages(queryText) {
+  if (!isDefaultDocument || !testQueriesList.length) return [];
+  const normalized = queryText.trim().toLowerCase().replace(/[?.,!]/g, "");
+  for (const tq of testQueriesList) {
+    const tqNorm = tq.query.trim().toLowerCase().replace(/[?.,!]/g, "");
+    // Exact match or very close match
+    if (normalized === tqNorm) return tq.ideal_pages;
+    // Check if one contains the other (handles minor variations)
+    if (normalized.includes(tqNorm) || tqNorm.includes(normalized)) return tq.ideal_pages;
+  }
+  return [];
+}
+
+// ── Run query ──
+async function runQuery() {
+  const query = document.getElementById("queryInput").value.trim();
+  if (!query) return;
+
+  // Auto-detect ideal pages from typed query
+  if (currentIdealPages.length === 0) {
+    currentIdealPages = findIdealPages(query);
+  }
+
+  const btn = document.getElementById("runBtn");
+  btn.disabled = true;
+  btn.textContent = "Running...";
+
+  showLoading("vectorResults", "vectorEmpty");
+  showLoading("piResults", "piEmpty");
+
+  try {
+    const res = await fetch(`${API}/api/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query }),
+    });
+    const data = await res.json();
+    renderVectorResults(data.vector_rag);
+    renderPageIndexResults(data.pageindex);
+  } catch (err) {
+    showError("vectorResults", "vectorEmpty", err.message);
+    showError("piResults", "piEmpty", err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Compare Both";
+    currentIdealPages = [];  // Reset after render
+  }
+}
+
+function showLoading(resultsId, emptyId) {
+  document.getElementById(emptyId).style.display = "none";
+  const el = document.getElementById(resultsId);
+  el.style.display = "block";
+  el.innerHTML = `<div class="empty-state"><div class="loading-spinner"></div><p>Running pipeline...</p></div>`;
+}
+
+function showError(resultsId, emptyId, msg) {
+  document.getElementById(emptyId).style.display = "none";
+  const el = document.getElementById(resultsId);
+  el.style.display = "block";
+  el.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>Error: ${msg}<br><br>Make sure the backend is running:<br><code>uvicorn backend.app:app --port 8000</code></p></div>`;
+}
+
+// ── Render Vector RAG ──
+function renderVectorResults(data) {
+  const el = document.getElementById("vectorResults");
+  el.style.display = "block";
+
+  const coverage = computeCoverage(data.pages_accessed, currentIdealPages);
+  const hasCoverage = currentIdealPages.length > 0;
+
+  let html = `
+    <div class="stats">
+      <div class="stat-card"><div class="val">${data.num_chunks}</div><div class="lbl">Chunks Retrieved</div></div>
+      <div class="stat-card"><div class="val">${data.timing.total_ms}ms</div><div class="lbl">Total Time</div></div>
+      <div class="stat-card"><div class="val">${hasCoverage ? coverage + '%' : '—'}</div><div class="lbl">Page Coverage</div></div>
+    </div>
+    ${hasCoverage ? `
+    <div class="coverage-bar-container">
+      <div class="coverage-label">Coverage of ideal pages: ${coverage}% (ideal: [${currentIdealPages.join(', ')}])</div>
+      <div class="coverage-bar"><div class="coverage-fill" style="width:${coverage}%"></div></div>
+    </div>` : `<div class="coverage-na">Coverage: N/A (no ground truth for this query)</div>`}
+    <div class="pages-row">
+      <span style="font-size:10px;color:var(--text-dim);margin-right:4px;">Pages accessed:</span>
+      ${renderPageBadges(data.pages_accessed)}
+    </div>
+  `;
+
+  html += `<div class="section-title">Pipeline Steps</div>`;
+  data.steps.forEach(step => {
+    html += `<div class="step-card">
+      <span class="step-num step-fetch">Step ${step.step}: ${step.action}</span>
+      <div class="step-reasoning">${step.detail}</div>
+      ${step.chunks ? step.chunks.map(c =>
+        `<div class="step-meta">${c.id} → pages [${c.pages.join(",")}] sim=${c.sim}</div>`
+      ).join("") : ""}
+    </div>`;
+  });
+
+  html += `<div class="section-title">Retrieved Chunks (Top-${data.num_chunks})</div>`;
+  data.retrieved_chunks.forEach((chunk) => {
+    const simClass = chunk.similarity > 0.6 ? "chunk-sim-high" : chunk.similarity > 0.3 ? "chunk-sim-mid" : "chunk-sim-low";
+    html += `<div class="chunk-card">
+      <span class="chunk-sim ${simClass}">${chunk.similarity.toFixed(4)}</span>
+      <strong style="font-size:13px;">${chunk.chunk_id}</strong>
+      <span style="font-size:11px;color:var(--text-dim);"> — pages [${chunk.pages.join(", ")}]</span>
+      <div class="chunk-preview">${escapeHtml(chunk.preview)}</div>
+    </div>`;
+  });
+
+  html += `<div class="answer-box">
+    <div class="answer-label">Generated Answer</div>
+    <div class="answer-text">${escapeHtml(data.answer)}</div>
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+// ── Render PageIndex ──
+function renderPageIndexResults(data) {
+  const el = document.getElementById("piResults");
+  el.style.display = "block";
+
+  const coverage = computeCoverage(data.pages_accessed, currentIdealPages);
+  const hasCoverage = currentIdealPages.length > 0;
+
+  let html = `
+    <div class="stats">
+      <div class="stat-card"><div class="val">${data.num_iterations}</div><div class="lbl">Reasoning Steps</div></div>
+      <div class="stat-card"><div class="val">${data.timing.total_ms}ms</div><div class="lbl">Total Time</div></div>
+      <div class="stat-card"><div class="val">${hasCoverage ? coverage + '%' : '—'}</div><div class="lbl">Page Coverage</div></div>
+    </div>
+    ${hasCoverage ? `
+    <div class="coverage-bar-container">
+      <div class="coverage-label">Coverage of ideal pages: ${coverage}% (ideal: [${currentIdealPages.join(', ')}])</div>
+      <div class="coverage-bar"><div class="coverage-fill" style="width:${coverage}%"></div></div>
+    </div>` : `<div class="coverage-na">Coverage: N/A (no ground truth for this query)</div>`}
+    <div class="pages-row">
+      <span style="font-size:10px;color:var(--text-dim);margin-right:4px;">Pages accessed:</span>
+      ${renderPageBadges(data.pages_accessed)}
+    </div>
+  `;
+
+  html += `<div class="section-title">Reasoning Trace</div>`;
+  data.steps.forEach(step => {
+    const actionClass = step.action === "FETCH_NODE" ? "step-fetch" :
+                        step.action === "ANSWER" || step.action === "FORCED_ANSWER" ? "step-answer" : "step-error";
+    const actionLabel = step.action === "FETCH_NODE"
+      ? `NAVIGATE → ${step.node_id} (${step.node_title}, pages ${step.pages})`
+      : step.action === "ANSWER" ? "ANSWER READY" : step.action;
+
+    html += `<div class="step-card">
+      <span class="step-num ${actionClass}">Step ${step.step}: ${actionLabel}</span>
+      <div class="step-reasoning">${escapeHtml(step.reasoning)}</div>
+      <div class="step-meta">
+        ${step.duration_ms ? `${step.duration_ms}ms` : ""}
+        ${step.sources ? ` &bull; Sources: ${step.sources.join(", ")}` : ""}
+      </div>
+    </div>`;
+  });
+
+  if (data.nodes_visited && data.nodes_visited.length > 0) {
+    html += `<div class="section-title">Nodes Visited</div>
+    <div style="font-size:13px;font-family:var(--mono);color:var(--text);">
+      ${data.nodes_visited.join(" → ")}
+    </div>`;
+  }
+
+  html += `<div class="answer-box">
+    <div class="answer-label">Generated Answer</div>
+    <div class="answer-text">${escapeHtml(data.answer)}</div>
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+// ── Helpers ──
+function computeCoverage(accessedPages, idealPages) {
+  if (!idealPages || idealPages.length === 0) return 0;
+  const overlap = idealPages.filter(p => accessedPages.includes(p)).length;
+  return Math.round((overlap / idealPages.length) * 100);
+}
+
+function renderPageBadges(pages) {
+  return pages.map(p => {
+    const isIdeal = currentIdealPages.includes(p);
+    return `<span class="page-badge ${isIdeal ? "page-ideal" : ""}">${p}</span>`;
+  }).join("");
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+}
+
+document.getElementById("queryInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") runQuery();
+});
+
+// ── Init ──
+loadDocumentStatus();
+</script>
+</body>
+</html>

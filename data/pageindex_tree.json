@@ -1,0 +1,130 @@
+{
+  "document": {
+    "title": "PBRER for Cardiozan (Rivaximab Sodium) 10mg/20mg",
+    "description": "Periodic Benefit-Risk Evaluation Report per ICH E2C(R2) for an oral Factor Xa inhibitor. Reporting period Apr 2023 - Mar 2024. Key safety focus: newly identified hepatotoxicity risk, ongoing thrombocytopenia signal, closed QT prolongation signal.",
+    "total_pages": 25,
+    "nodes": [
+      {
+        "node_id": "N001", "title": "Title Page and Table of Contents",
+        "start_page": 1, "end_page": 2,
+        "summary": "Cover page with drug name, MAH, reporting period. Detailed TOC listing all sections and appendices with page references."
+      },
+      {
+        "node_id": "N002", "title": "1. Introduction",
+        "start_page": 3, "end_page": 3,
+        "summary": "Cardiozan is a Factor Xa inhibitor for NVAF stroke prevention, DVT/PE treatment and prevention. Doses 10-20mg. First approved EU Mar 2018. 6th PBRER. Pediatric PIP study CZ-PED-401 ongoing."
+      },
+      {
+        "node_id": "N003", "title": "2. Worldwide Marketing Authorization Status",
+        "start_page": 4, "end_page": 4,
+        "summary": "Approved in 78 countries. Pending in Brazil (ANVISA) and South Korea (MFDS). Japan PMDA query on DVT/PE indication. References Section 7 for signal impact."
+      },
+      {
+        "node_id": "N004", "title": "3. Actions Taken for Safety Reasons",
+        "start_page": 5, "end_page": 5,
+        "summary": "Regulatory: EMA SmPC update for hepatotoxicity warning (Jun 2023), FDA REMS modification (Aug 2023), Health Canada DHPC on thrombocytopenia (Oct 2023). MAH: RMP v8.0 update, post-marketing study CZ-HEP-501 initiated, educational materials to 45,000 HCPs. References Section 7.1."
+      },
+      {
+        "node_id": "N005", "title": "4. Changes to Reference Safety Information (CCDS)",
+        "start_page": 6, "end_page": 6,
+        "summary": "CCDS v12.0 updates: added severe hepatic impairment contraindication (Child-Pugh C), hepatotoxicity warning with ALT monitoring thresholds (discontinue if >5x ULN or >3x with symptoms), hepatocellular injury as uncommon ADR, thrombocytopenia reclassified to uncommon, CYP3A4/P-gp interaction warning (+160% exposure). References Appendix B Table B-3."
+      },
+      {
+        "node_id": "N006", "title": "5. Estimated Exposure and Use Patterns",
+        "start_page": 7, "end_page": 8,
+        "summary": "Cumulative: 2.4M patient-years. Current period: 520,000 PY. By indication: 60% NVAF, 18% DVT, 12% PE, 10% prevention. By region: 42% Europe, 30% NA, 20% APAC. Age: 65-74 largest (41%). Dose: 70% on 20mg. Special populations: 12% renal impairment, 3% hepatic, 15% concomitant antiplatelet. References Section 7.1 for hepatotoxicity exposure."
+      },
+      {
+        "node_id": "N007", "title": "6. Presentation of Data",
+        "start_page": 9, "end_page": 12,
+        "summary": "14,820 ICSRs total (60% spontaneous). 3,705 serious (25%), rate 7.1/1000 PY. SAE tables: hepatobiliary +38% increase. 67 fatal cases: 23 ICH, 12 hepatic failure (up from 4), 11 GI hemorrhage. Literature: 342 publications including DILI studies (Chen, Yamamoto), thrombocytopenia mechanism (Rodriguez), efficacy (CARDIO-STROKE, CARDIO-VTE). References Appendix A for cases, Appendix B Table B-1.",
+        "sub_nodes": [
+          {
+            "node_id": "N007a", "title": "6.1 Reference Information and ICSR Overview",
+            "start_page": 9, "end_page": 9,
+            "summary": "CCDS v12.0 as reference. 14,820 ICSRs: 60% spontaneous, 20% clinical, 10% literature, 10% other. 3,705 serious (25%). Reporting rate 7.1/1000 PY (consistent with prior 6.5-7.8 range). Refers to Appendix B Table B-1."
+          },
+          {
+            "node_id": "N007b", "title": "6.2 Cumulative Summary of Serious Adverse Events",
+            "start_page": 10, "end_page": 11,
+            "summary": "SAE tables by SOC. Hepatobiliary highest increase (+38%): 523 this period, DILI 198 new (387 cumulative). Blood disorders: thrombocytopenia 187 new (623 cumulative). Fatal: 67 total, hepatic failure 12 (up from 4). References Section 7.1 and Appendix A."
+          },
+          {
+            "node_id": "N007c", "title": "6.3 Cumulative Summary from Literature",
+            "start_page": 12, "end_page": 12,
+            "summary": "342 relevant publications. Key: Chen et al. DILI case series (15 cases, risk factors: age>65, statins, NAFLD, hepatocellular 73%), Yamamoto cohort (0.42% incidence, OR 2.3 vs warfarin), Rodriguez thrombocytopenia (anti-PF4 antibodies), CARDIO-STROKE (62% RRR, NNT=24), CARDIO-VTE (2.1% vs 8.7% recurrence)."
+          }
+        ]
+      },
+      {
+        "node_id": "N008", "title": "7. Signal Evaluation",
+        "start_page": 13, "end_page": 15,
+        "summary": "Three signals: (1) NEW hepatotoxicity/DILI - CONFIRMED, moved to identified risk, PRR 2.8, 198 new cases, 12 fatal, dechallenge+ 83.6%, rechallenge+ 72.7%; (2) ONGOING thrombocytopenia - immune mechanism suspected, anti-PF4 antibodies, study CZ-PLT-001; (3) CLOSED QT prolongation - refuted by TQT study (3.2ms < 10ms threshold), confounded by concomitant drugs.",
+        "sub_nodes": [
+          {
+            "node_id": "N008a", "title": "7.1 New Signal: Hepatotoxicity (DILI)",
+            "start_page": 13, "end_page": 13,
+            "summary": "CONFIRMED signal. PRR 2.8 (2.4-3.3) vs other DOACs. 198 new cases (387 cumulative): mean age 68.4, 58% female, median onset 42 days, 78% on 20mg. Outcomes: 67.7% recovered, 6.1% fatal. WHO-UMC: 12 certain, 89 probable, 78 possible. Dechallenge+ 83.6%, rechallenge+ 72.7%. References Appendix A for case narratives. Risk factors continued next page."
+          },
+          {
+            "node_id": "N008b", "title": "7.2 Ongoing Signal: Thrombocytopenia",
+            "start_page": 14, "end_page": 14,
+            "summary": "187 new cases (623 cumulative), rate 0.28->0.36/1000 PY. Severity: 45% Grade 1, 28% Grade 2, 18% Grade 3, 9% Grade 4 (3 fatal). Anti-PF4 antibodies in 8/12 tested = HIT-like mechanism. Risk factors: heparin OR 3.2, prior HIT OR 5.7, autoimmune OR 2.1. Study CZ-PLT-001 ongoing. References Section 8.2, Appendix B Table B-4."
+          },
+          {
+            "node_id": "N008c", "title": "7.3 Closed Signal: QT Prolongation",
+            "start_page": 15, "end_page": 15,
+            "summary": "REFUTED. TQT study CZ-QT-201 (n=240): ddQTcF +3.2ms at 60mg supratherapeutic (below 10ms threshold). Phase 3 ECG (n=8,450): -0.8ms, no signal. 23 reports confounded: 18/23 concomitant QT drugs (amiodarone/sotalol), 4/23 long QT syndrome, 1/23 hypokalemia. Signal closed Dec 2023. No CCDS changes."
+          }
+        ]
+      },
+      {
+        "node_id": "N009", "title": "8. Risk Characterization",
+        "start_page": 16, "end_page": 17,
+        "summary": "Identified risks: major bleeding, ICH, GI hemorrhage, hepatotoxicity/DILI (NEW), anemia, hypersensitivity. Hepatotoxicity detail: 0.38/1000 PY spontaneous, 0.42% true incidence, 6.1% case fatality, RR 2.3 vs warfarin. Risk factors: age>65, liver disease, statins, CYP3A4 inhibitors. Potential risks: thrombocytopenia, ILD, SJS, embryo-fetal. Missing: pediatric, pregnancy, severe renal, long-term, body weight.",
+        "sub_nodes": [
+          {
+            "node_id": "N009a", "title": "8.1 Identified Risks",
+            "start_page": 16, "end_page": 16,
+            "summary": "Six identified risks listed. Hepatotoxicity NEW (was potential): incidence 0.38/1000 PY (spontaneous) to 0.42% true (Yamamoto), case fatality 6.1%, RR 2.3 vs warfarin. Risk factors: age>65, liver disease (NAFLD/hepatitis), statins, CYP3A4 inhibitors. Risk minimization: CCDS update, DHPC, study CZ-HEP-501, educational materials."
+          },
+          {
+            "node_id": "N009b", "title": "8.2 Potential Risks and 8.3 Missing Information",
+            "start_page": 17, "end_page": 17,
+            "summary": "Potential: thrombocytopenia immune (CZ-PLT-001), ILD (12 cases), SJS (4 cases), embryo-fetal. Missing info: pediatric (CZ-PED-401), pregnancy (CARDIO-PREG registry), severe renal (PK planned), long-term >5yr (CARDIO-REAL), body weight (CZ-BW-201). References Appendix B Tables B-5 to B-8."
+          }
+        ]
+      },
+      {
+        "node_id": "N010", "title": "9. Benefit Evaluation",
+        "start_page": 18, "end_page": 19,
+        "summary": "NVAF: 21% RRR stroke/SE vs warfarin (CARDIO-AF), 62% RRR vs placebo (CARDIO-STROKE), 33% ICH reduction, NNT=24. DVT/PE: non-inferior efficacy, 46% major bleeding reduction, superior net clinical benefit. Real-world: CARDIO-REAL (n=28,450) confirms trials. DOAC comparison: ranked 2nd stroke, 1st ICH prevention. Convenience: once-daily, no INR."
+      },
+      {
+        "node_id": "N011", "title": "10. Benefit-Risk Analysis",
+        "start_page": 20, "end_page": 21,
+        "summary": "B-R FAVORABLE all indications. NVAF: stroke benefit 8.3/1000 PY vs hepatic fatality risk 0.023/1000 PY. DVT/PE: bleeding reduction key. Special populations: elderly net benefit maintained, renal 10mg adequate, hepatic Child-Pugh C contraindicated. Reassess after CZ-HEP-501 and CZ-PLT-001."
+      },
+      {
+        "node_id": "N012", "title": "11. Conclusions and Recommendations",
+        "start_page": 22, "end_page": 22,
+        "summary": "B-R favorable. Hepatotoxicity now identified risk (387 cases, PRR 2.8). Thrombocytopenia ongoing (anti-PF4). QT closed/refuted. No new signals. Recommendations: enhanced monitoring, RMP v8.0 submission, CZ-HEP-501 complete Q4-2024, CZ-PLT-001 interim Q3-2024, next PBRER Jun 2025. No indication/dose changes."
+      },
+      {
+        "node_id": "N013", "title": "Appendix A: Line Listings of ICSRs",
+        "start_page": 23, "end_page": 23,
+        "summary": "Individual case narratives. Fatal hepatic failure (n=12) with RUCAM scores: CZ-2023-00891 (72F, RUCAM 9, Hy's Law, statin+amlodipine, died Day 52), CZ-2023-01204 (81M, RUCAM 7, NAFLD+ritonavir CYP3A4, died Day 28), CZ-2023-01567 (67F, RUCAM 6, hepatorenal, died Day 112). Also ICH fatals (n=23), GI hemorrhage fatals (n=11)."
+      },
+      {
+        "node_id": "N014", "title": "Appendix B: Cumulative Summary Tabulations",
+        "start_page": 24, "end_page": 24,
+        "summary": "Tables: B-1 all ICSRs by SOC (14,820), B-2 reporter type (66.6% HCP), B-3 PK interactions (ketoconazole +160%, ritonavir +153%, rifampicin -50%), B-4 thrombocytopenia by severity/risk factor, B-5 to B-8 risk minimization effectiveness."
+      },
+      {
+        "node_id": "N015", "title": "Appendix C: Literature Search Strategy",
+        "start_page": 25, "end_page": 25,
+        "summary": "Searched PubMed, Embase, Cochrane, WHO Newsletter, Reactions Weekly. 1,247 hits -> 892 deduplicated -> 342 relevant -> 28 new safety info -> 15 requiring ICSR. Key pubs: Chen DILI, Yamamoto hepatotox, Rodriguez thrombocytopenia, Martinez CARDIO-STROKE, Wilson CARDIO-VTE, Thompson DOAC meta-analysis."
+      }
+    ]
+  }
+}

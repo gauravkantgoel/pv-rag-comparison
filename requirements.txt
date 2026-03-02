@@ -1,0 +1,18 @@
+# ── Core Framework ──
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+python-dotenv==1.0.1
+python-multipart==0.0.12    # For file uploads
+
+# ── Vector RAG (Approach 1) ──
+sentence-transformers==3.3.1
+numpy>=1.24.0
+
+# ── PDF Processing ──
+PyMuPDF==1.25.1             # For extracting text from uploaded PDFs
+
+# ── LLM (Both approaches) ──
+anthropic>=0.39.0
+
+# ── Utilities ──
+pydantic==2.10.0
